@@ -9,24 +9,30 @@ class RubFormat{
 
         this.rub = rub;
         String ruble = "";
-        switch (rub){
-            case 1:
-                ruble = "Рубль";
-                break;
-            case 2:
-            case 3:
-            case 4:
-                ruble = "Рубля";
-                break;
-            case 0:
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-                ruble = "Рублей";
-                break;
+        if (rub >= 10){
+            ruble = "Рублей";
+        } else {
+            switch (rub){
+                case 1:
+                    ruble = "Рубль";
+                    break;
+                case 2:
+                case 3:
+                case 4:
+                    ruble = "Рубля";
+                    break;
+                case 0:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                    ruble = "Рублей";
+                    break;
+            }
+
         }
+
         return ruble;
 
     }
@@ -57,6 +63,7 @@ public class Main {
                 peoples = sc.nextInt();
                 if (peoples < 1) {
                     System.out.println("Введите правильное количество гостей");
+                    continue;
                 } else if (peoples == 1){
                     System.out.println("Делить не нужно, конец программы");
                     return;
@@ -66,7 +73,8 @@ public class Main {
                 }
             } else {
                 System.out.println("Введите целое число гостей");
-                sc.next();
+                //sc.next();
+                continue;
             }
 
         }
@@ -74,10 +82,19 @@ public class Main {
         while(true){
             System.out.println("Введите название товара или 'Завершить' для отмены");
             String name = sc.nextLine();
+            if (name.isEmpty()){
+                System.out.println("Название товара не может быть пустым");
+                continue;
 
-            if (name.equalsIgnoreCase("Завершить")) {
+            } else if (name.matches("\\d+")){
+                System.out.println("Название товара не может состоять только из цифр");
+                continue;
+                
+            } else if (name.equalsIgnoreCase("Завершить")) {
                 break;
             }
+
+
             System.out.println("Введите цену товара");
             while(true){
 
@@ -100,13 +117,23 @@ public class Main {
             }
 
         }
-        System.out.println("Добавленные товары: ");
+        if (products.isEmpty()) {
+            System.out.println("Вы не добавили ни одного товара");
+        } else System.out.println("Добавленные товары: ");
+        ;
         for (int i = 0; i < products.size(); i++){
             System.out.println("Товар: " + products.get(i).name + " стоимостью: " + products.get(i).price);
         }
         RubFormat rubFormat = new RubFormat();
         float totalSum = sum/(float)peoples;
-        int rub = (int) totalSum % 10;
+        int rub = (int) totalSum;
+        if ((int)totalSum > 10 && (int)totalSum <= 20) {
+            rub = (int) totalSum;
+        } else {
+            rub = (int) totalSum % 10;
+
+        }
+
         String ruble = rubFormat.formatter(rub);
 
         System.out.print(String.format("Каждый гость должен заплатить: %.2f %s",totalSum, ruble ));
